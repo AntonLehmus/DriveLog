@@ -9,6 +9,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.RadioButton;
 
 import SlidingTab.SlidingTabLayout;
 
@@ -84,5 +86,23 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public void onRadioButtonClicked(View view) {
+        // Is the button now checked?
+        boolean checked = ((RadioButton) view).isChecked();
+
+        // Check which radio button was clicked
+        switch(view.getId()) {
+            case R.id.radio_personal:
+                if (checked)
+
+
+                    break;
+            case R.id.radio_work:
+                if (checked)
+
+
+                    break;
+        }
+    }
 }
 

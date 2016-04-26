@@ -10,6 +10,7 @@
     <string name="personal">Oma</string>
     <string name="work">Työ</string>
     <string name="log_type">Matkan tyyppi</string>
+    <string name="date">Päivämäärä</string>
 
 
 </resources>
