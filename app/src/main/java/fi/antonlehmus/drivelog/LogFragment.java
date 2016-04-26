@@ -1,14 +1,14 @@
 package fi.antonlehmus.drivelog;
 
-import android.content.Context;
-import android.net.Uri;
+
+import android.app.Activity;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RadioButton;
-import android.widget.TextView;
 
 
 public class LogFragment extends Fragment {
@@ -20,6 +20,16 @@ public class LogFragment extends Fragment {
         return view;
     }
 
+    //allows only portrait mode
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if(isVisibleToUser) {
+            Activity a = getActivity();
+            if(a != null) a.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
+    }
+
     public void onRadioButtonClicked(View view) {
         // Is the button now checked?
         boolean checked = ((RadioButton) view).isChecked();
@@ -28,11 +38,13 @@ public class LogFragment extends Fragment {
         switch(view.getId()) {
             case R.id.radio_personal:
                 if (checked)
-                    // Pirates are the best
+
+
                     break;
             case R.id.radio_work:
                 if (checked)
-                    // Ninjas rule
+
+
                     break;
         }
     }

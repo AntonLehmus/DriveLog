@@ -79,7 +79,8 @@
                 android:onClick="onRadioButtonClicked"
                 android:padding="@dimen/radio_padding"
                 android:layout_margin="@dimen/radio_margin"
-                android:textSize="@dimen/labelTextSize"/>
+                android:textSize="@dimen/labelTextSize"
+                android:checked="true"/>
 
             <RadioButton android:id="@+id/radio_work"
                 android:layout_width="wrap_content"
