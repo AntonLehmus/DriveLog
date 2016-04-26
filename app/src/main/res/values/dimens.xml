@@ -10,8 +10,10 @@
     <dimen name="tab_item_label">5sp</dimen>
     <dimen name="custom_tab_layout_height">72dp</dimen>
 
-    <dimen name="radio_padding">12dp</dimen>
-    <dimen name="radio_margin">8dp</dimen>
+    <dimen name="padding_large">24dp</dimen>
+
+    <dimen name="radio_padding">20dp</dimen>
+    <dimen name="radio_margin">2dp</dimen>
 
     <dimen name="textSize">12sp</dimen>
     <dimen name="labelTextSize">17sp</dimen>
