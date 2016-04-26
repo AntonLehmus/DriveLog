@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">DriveLog</string>
+
+
+    <string name="log_fragment_title">Log</string>
+    <string name="list_fragment_title">List</string>
+
+
 </resources>
