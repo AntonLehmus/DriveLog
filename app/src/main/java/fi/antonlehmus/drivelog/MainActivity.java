@@ -115,5 +115,13 @@ public class MainActivity extends AppCompatActivity {
         DialogFragment newFragment = new TimePickerFragment();
         newFragment.show(getSupportFragmentManager(), "timePicker");
     }
+
+    public void saveData(View view){
+
+    }
+
+    public void discardData(View view){
+        
+    }
 }
 

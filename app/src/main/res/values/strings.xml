@@ -12,6 +12,8 @@
     <string name="log_type">Matkan tyyppi</string>
     <string name="date">Päivämäärä</string>
     <string name="time">Kellonaika</string>
+    <string name="btnSave">Talenna</string>
+    <string name="btnDiscard">Hylkää</string>
 
 
 </resources>
