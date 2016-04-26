@@ -6,27 +6,86 @@ package fi.antonlehmus.drivelog;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import SlidingTab.SlidingTabLayout;
 
 public class MainActivity extends AppCompatActivity {
+    // Declaring Your View and Variables
+
+    Toolbar toolbar;
+    ViewPager pager;
+    PagerAdapter adapter;
+    SlidingTabLayout tabs;
+    CharSequence Titles[]={"Log","List"};
+    int Numboftabs = Titles.length;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Layout manager that allows the user to flip through the pages
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
 
-        // getSupportFragmentManager allows use to interact with the fragments
-        // MyFragmentPagerAdapter will return a fragment based on an index that is passed
-        viewPager.setAdapter(new MyFragmentPagerAdapter(getSupportFragmentManager(),
-                MainActivity.this));
+        // Creating The Toolbar and setting it as the Toolbar for the activity
 
-        // Initialize the Sliding Tab Layout
-        SlidingTabLayout slidingTabLayout = (SlidingTabLayout) findViewById(R.id.sliding_tabs);
+        toolbar = (Toolbar) findViewById(R.id.tool_bar);
+        setSupportActionBar(toolbar);
 
-        // Connect the viewPager with the sliding tab layout
-        slidingTabLayout.setViewPager(viewPager);
+
+        // Creating The ViewPagerAdapter and Passing Fragment Manager, Titles fot the Tabs and Number Of Tabs.
+        adapter =  new PagerAdapter(getSupportFragmentManager(),Titles,Numboftabs);
+
+        // Assigning ViewPager View and setting the adapter
+        pager = (ViewPager) findViewById(R.id.pager);
+        pager.setAdapter(adapter);
+
+        // Assiging the Sliding Tab Layout View
+        tabs = (SlidingTabLayout) findViewById(R.id.tabs);
+        //tabs.setDistributeEvenly(true); // To make the Tabs Fixed set this true, This makes the tabs Space Evenly in Available width
+
+        // Setting Custom Color for the Scroll bar indicator of the Tab View
+        tabs.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
+            @Override
+            public int getIndicatorColor(int position) {
+                return getResources().getColor(R.color.colorAccent);
+            }
+            @Override
+            public int getDividerColor(int position) {
+                return getResources().getColor(R.color.colorDivider);
+            }
+        });
+
+        // Setting the ViewPager For the SlidingTabsLayout
+        tabs.setViewPager(pager);
+
+
+
     }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
 }
+
