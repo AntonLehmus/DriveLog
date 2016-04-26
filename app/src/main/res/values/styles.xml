@@ -1,0 +1,26 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- enable window content transitions -->
+        <item name="android:windowActivityTransitions">true</item>
+        <!-- colors -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+    <!-- This is the custom textview styles for this application -->
+    <style name="Widget.TextView.Custom" parent="android:Widget.TextView">
+        <item name="android:textColor">@color/textColorPrimary</item>
+    </style>
+
+    <style name="LogView"  parent="AppTheme">
+        <!-- specify enter and exit transitions -->
+        <item name="android:windowEnterTransition">@android:transition/slide_left</item>
+    </style>
+    <style name="ListView"  parent="AppTheme">
+        <!-- specify enter and exit transitions -->
+        <item name="android:windowEnterTransition">@android:transition/slide_right</item>
+    </style>
+
+</resources>
