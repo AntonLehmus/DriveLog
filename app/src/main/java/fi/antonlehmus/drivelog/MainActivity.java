@@ -12,21 +12,23 @@ import android.view.MenuItem;
 
 import SlidingTab.SlidingTabLayout;
 
+
 public class MainActivity extends AppCompatActivity {
-    // Declaring Your View and Variables
+
 
     Toolbar toolbar;
     ViewPager pager;
     PagerAdapter adapter;
     SlidingTabLayout tabs;
-    CharSequence Titles[]={"Log","List"};
-    int Numboftabs = Titles.length;
+    int Numboftabs = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        String[] Titles =  new String[] {this.getString(R.string.log_fragment_title),this.getString(R.string.list_fragment_title)};
+        Numboftabs = Titles.length;
 
         // Creating The Toolbar and setting it as the Toolbar for the activity
 
@@ -43,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Assiging the Sliding Tab Layout View
         tabs = (SlidingTabLayout) findViewById(R.id.tabs);
-        //tabs.setDistributeEvenly(true); // To make the Tabs Fixed set this true, This makes the tabs Space Evenly in Available width
+        tabs.setDistributeEvenly(true); // To make the Tabs Fixed set this true, This makes the tabs Space Evenly in Available width
 
         // Setting Custom Color for the Scroll bar indicator of the Tab View
         tabs.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
@@ -51,16 +53,10 @@ public class MainActivity extends AppCompatActivity {
             public int getIndicatorColor(int position) {
                 return getResources().getColor(R.color.colorAccent);
             }
-            @Override
-            public int getDividerColor(int position) {
-                return getResources().getColor(R.color.colorDivider);
-            }
         });
 
         // Setting the ViewPager For the SlidingTabsLayout
         tabs.setViewPager(pager);
-
-
 
     }
 
@@ -81,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            //implement later
             return true;
         }
 
