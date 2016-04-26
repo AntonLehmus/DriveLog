@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RadioButton;
+import android.widget.TextView;
 
 import SlidingTab.SlidingTabLayout;
 
@@ -121,7 +122,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void discardData(View view){
-        
+
+        //reset the radio buttons
+        RadioButton work = (RadioButton)findViewById(R.id.radio_work);
+        RadioButton personal = (RadioButton)findViewById(R.id.radio_personal);
+        personal.setChecked(true);
+        work.setChecked(false);
+
+        //reset date & time
+        TextView tvTime = (TextView) this.findViewById(R.id.timePicker);
+        tvTime.setText(this.getText(R.string.time));
+        TextView tvDate = (TextView) this.findViewById(R.id.datePicker);
+        tvDate.setText(this.getText(R.string.date));
+
+        //reset odometer readings
+
     }
 }
 
