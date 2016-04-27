@@ -5,10 +5,11 @@
     android:gravity="center"
     tools:context="fi.antonlehmus.drivelog.ListFragment">
 
-    <TextView
-        android:id="@+id/tvLabel"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Hello ListFragment" />
+   <ListView
+       android:id="@+id/journeyList"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content">
+
+   </ListView>
 
 </FrameLayout>

@@ -3,7 +3,7 @@ package fi.antonlehmus.drivelog;
 
 
 
-import android.os.AsyncTask;
+
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.view.ViewPager;
@@ -18,7 +18,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-import java.util.List;
 
 import SlidingTab.SlidingTabLayout;
 
@@ -194,32 +193,6 @@ public class MainActivity extends AppCompatActivity {
 
         //reset odometer readings
 
-    }
-
-
-    private class readJourneys extends AsyncTask<String, Void, List<Journey>> {
-
-        @Override
-        protected List<Journey> doInBackground(String... params) {
-            List<Journey> journeys = databaseHelper.getAllJourneys();
-            for (Journey journey : journeys) {
-
-            }
-            return journeys;
-        }
-
-        @Override
-        protected void onPostExecute(List<Journey> result) {
-
-        }
-
-        @Override
-        protected void onPreExecute() {
-        }
-
-        @Override
-        protected void onProgressUpdate(Void... values) {
-        }
     }
 
 }
