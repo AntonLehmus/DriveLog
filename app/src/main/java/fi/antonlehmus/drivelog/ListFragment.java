@@ -7,6 +7,7 @@ import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,10 +28,23 @@ public class ListFragment extends Fragment {
         // Get singleton instance of database
         databaseHelper = dbHelper.getInstance(getActivity());
 
+        List<Journey> journeys = databaseHelper.getAllJourneys();
 
-        new readJourneys().execute();
 
         View view = inflater.inflate(R.layout.fragment_list, container, false);
+
+        // Construct the data source
+        ArrayList<Journey> arrayOfUsers = new ArrayList<Journey>();
+        // Create the adapter to convert the array to views
+        JourneysAdapter adapter = new JourneysAdapter(getActivity(), arrayOfUsers);
+        // Attach the adapter to a ListView
+        ListView listView = (ListView) view.findViewById(R.id.journeyList);
+        listView.setAdapter(adapter);
+
+        for (Journey journey : journeys) {
+            adapter.add(journey);
+        }
+
         return view;
     }
 
@@ -44,28 +58,4 @@ public class ListFragment extends Fragment {
         }
     }
 
-
-    private class readJourneys extends AsyncTask<Void, Void,Void> {
-        private ArrayList<Journey> journeyArray = new ArrayList<Journey>();
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            List<Journey> journeys = databaseHelper.getAllJourneys();
-            for (Journey journey : journeys) {
-                journeyArray.add(journey);
-                //hurr durr
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void nothing) {
-            // Create the adapter to convert the array to views
-            JourneysAdapter adapter = new JourneysAdapter(getActivity(), journeyArray);
-            // Attach the adapter to a ListView
-            ListView listView = (ListView) getActivity().findViewById(R.id.journeyList);
-            listView.setAdapter(adapter);
-        }
-
-    }
 }
