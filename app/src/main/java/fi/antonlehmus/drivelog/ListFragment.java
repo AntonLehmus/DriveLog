@@ -42,6 +42,7 @@ public class ListFragment extends Fragment {
         listView.setAdapter(adapter);
 
         for (Journey journey : journeys) {
+            Log.d("ListFragment",journey.toString());
             adapter.add(journey);
         }
 
