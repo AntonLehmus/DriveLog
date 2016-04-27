@@ -14,17 +14,20 @@ import android.view.View;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
+
 import SlidingTab.SlidingTabLayout;
 
 
 public class MainActivity extends AppCompatActivity {
 
+    private static Boolean journeyType = true; //personal
 
-    Toolbar toolbar;
-    ViewPager pager;
-    PagerAdapter adapter;
-    SlidingTabLayout tabs;
-    int Numboftabs = 2;
+    private Toolbar toolbar;
+    private ViewPager pager;
+    private PagerAdapter adapter;
+    private SlidingTabLayout tabs;
+    private int Numboftabs = 2;
+    private dbHelper databaseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +65,9 @@ public class MainActivity extends AppCompatActivity {
         // Setting the ViewPager For the SlidingTabsLayout
         tabs.setViewPager(pager);
 
+        // Get singleton instance of database
+        databaseHelper = dbHelper.getInstance(this);
+
     }
 
 
@@ -95,14 +101,14 @@ public class MainActivity extends AppCompatActivity {
         // Check which radio button was clicked
         switch(view.getId()) {
             case R.id.radio_personal:
-                if (checked)
-
-
+                if (checked) {
+                    journeyType = true;
+                }
                     break;
             case R.id.radio_work:
-                if (checked)
-
-
+                if (checked) {
+                    journeyType = false;
+                }
                     break;
         }
     }
@@ -118,7 +124,32 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void saveData(View view){
+        Journey current = new Journey();
 
+        //read user input
+        android.support.design.widget.TextInputEditText odometerStart   =
+                (android.support.design.widget.TextInputEditText)findViewById(R.id.odometerStart);
+
+        android.support.design.widget.TextInputEditText odometerStop   =
+                (android.support.design.widget.TextInputEditText)findViewById(R.id.odometerStop);
+
+        TextView dateView = (TextView)findViewById(R.id.datePicker);
+        String dateStr = dateView.getText().toString();
+        TextView timeView = (TextView)findViewById(R.id.timePicker);
+        String timeStr = timeView.getText().toString();
+
+        String dateTimeStr = new String();
+        dateTimeStr= dateTimeStr.concat(dateStr).
+                concat(" ").
+                concat(timeStr);
+
+        //save user input
+        current.odometerStart = Long.parseLong(odometerStart.getText().toString());
+        current.odometerStop = Long.parseLong(odometerStop.getText().toString());
+        current.type = journeyType;
+        current.dateTime = dateTimeStr;
+
+        databaseHelper.addJourney(current);
     }
 
     public void discardData(View view){

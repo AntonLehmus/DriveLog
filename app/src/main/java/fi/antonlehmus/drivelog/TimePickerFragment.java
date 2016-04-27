@@ -33,7 +33,7 @@ public class TimePickerFragment extends DialogFragment
         myCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
         myCalendar.set(Calendar.MINUTE, minute);
 
-        SimpleDateFormat df = new SimpleDateFormat("HH:mm", Locale.getDefault());
+        SimpleDateFormat df = new SimpleDateFormat("HH:mm");
         String  currentTime = df.format(myCalendar.getTime());
 
         TextView tv = (TextView) getActivity().findViewById(R.id.timePicker);

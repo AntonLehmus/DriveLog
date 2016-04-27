@@ -33,7 +33,7 @@ public class DatePickerFragment extends DialogFragment
         myCalendar.set(Calendar.MONTH, month);
         myCalendar.set(Calendar.DAY_OF_MONTH, day);
 
-        SimpleDateFormat df = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
+        SimpleDateFormat df = new SimpleDateFormat("dd.MM.yyyy");
         String  currentTime = df.format(myCalendar.getTime());
 
         TextView tv = (TextView) getActivity().findViewById(R.id.datePicker);
