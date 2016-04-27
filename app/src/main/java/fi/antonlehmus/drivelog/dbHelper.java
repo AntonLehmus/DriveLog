@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.provider.BaseColumns;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -20,7 +19,7 @@ public class dbHelper extends SQLiteOpenHelper {
 
     // Database Info
     private static final String DATABASE_NAME = "driveLogDatabase";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 4;
 
     // Table Names
     private static final String TABLE_JOURNEYS = "journeys";
@@ -31,6 +30,7 @@ public class dbHelper extends SQLiteOpenHelper {
     private static final String KEY_JOURNEY_ODOMETER_STOP = "odometerStop";
     private static final String KEY_JOURNEY_TYPE = "type";
     private static final String KEY_JOURNEY_DATE_TIME = "dateTime";
+    private static final String KEY_JOURNEY_DESCRIPTION = "description";
 
 
     /**
@@ -56,10 +56,11 @@ public class dbHelper extends SQLiteOpenHelper {
         String CREATE_POSTS_TABLE = "CREATE TABLE " + TABLE_JOURNEYS +
                 "(" +
                 KEY_JOURNEY_ID + " INTEGER PRIMARY KEY," + // Define a primary key
-                KEY_JOURNEY_ODOMETER_START + " UNSIGNED BIG INT" +
-                KEY_JOURNEY_ODOMETER_STOP + " UNSIGNED BIG INT" +
-                KEY_JOURNEY_TYPE + " TINYINT" +
-                KEY_JOURNEY_DATE_TIME + " TEXT" +
+                KEY_JOURNEY_ODOMETER_START + " UNSIGNED BIG INT," +
+                KEY_JOURNEY_ODOMETER_STOP + " UNSIGNED BIG INT," +
+                KEY_JOURNEY_TYPE + " TINYINT," +
+                KEY_JOURNEY_DATE_TIME + " TEXT," +
+                KEY_JOURNEY_DESCRIPTION + " TEXT" +
                 ")";
 
         db.execSQL(CREATE_POSTS_TABLE);
@@ -96,13 +97,12 @@ public class dbHelper extends SQLiteOpenHelper {
         // consistency of the database.
         db.beginTransaction();
         try {
-
-
             ContentValues values = new ContentValues();
             values.put(KEY_JOURNEY_ODOMETER_START, journey.odometerStart);
             values.put(KEY_JOURNEY_ODOMETER_STOP, journey.odometerStop);
             values.put(KEY_JOURNEY_TYPE, journey.type);
             values.put(KEY_JOURNEY_DATE_TIME, journey.dateTime);
+            values.put(KEY_JOURNEY_DESCRIPTION, journey.description);
 
             // Notice how we haven't specified the primary key. SQLite auto increments the primary key column.
             db.insertOrThrow(TABLE_JOURNEYS, null, values);
@@ -134,6 +134,7 @@ public class dbHelper extends SQLiteOpenHelper {
                     newUser.odometerStop = Long.parseLong(cursor.getString(cursor.getColumnIndex(KEY_JOURNEY_ODOMETER_STOP)));
                     newUser.type = Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex(KEY_JOURNEY_TYPE)));
                     newUser.dateTime =cursor.getString(cursor.getColumnIndex(KEY_JOURNEY_DATE_TIME));
+                    newUser.description =cursor.getString(cursor.getColumnIndex(KEY_JOURNEY_DESCRIPTION));
                 } while(cursor.moveToNext());
             }
         } catch (Exception e) {
@@ -155,6 +156,7 @@ public class dbHelper extends SQLiteOpenHelper {
         values.put(KEY_JOURNEY_ODOMETER_STOP, journey.odometerStop);
         values.put(KEY_JOURNEY_TYPE, journey.type);
         values.put(KEY_JOURNEY_DATE_TIME,journey.dateTime);
+        values.put(KEY_JOURNEY_DESCRIPTION,journey.description);
 
 
         return db.update(TABLE_JOURNEYS, values, KEY_JOURNEY_ID + " =",

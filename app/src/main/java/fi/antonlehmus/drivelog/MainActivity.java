@@ -3,6 +3,7 @@ package fi.antonlehmus.drivelog;
 
 
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.view.ViewPager;
@@ -11,9 +12,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
+
+import java.util.List;
 
 import SlidingTab.SlidingTabLayout;
 
@@ -34,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        String[] Titles =  new String[] {this.getString(R.string.log_fragment_title),this.getString(R.string.list_fragment_title)};
+        String[] Titles = new String[]{this.getString(R.string.log_fragment_title), this.getString(R.string.list_fragment_title)};
         Numboftabs = Titles.length;
 
         // Creating The Toolbar and setting it as the Toolbar for the activity
@@ -44,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         // Creating The ViewPagerAdapter and Passing Fragment Manager, Titles fot the Tabs and Number Of Tabs.
-        adapter =  new PagerAdapter(getSupportFragmentManager(),Titles,Numboftabs);
+        adapter = new PagerAdapter(getSupportFragmentManager(), Titles, Numboftabs);
 
         // Assigning ViewPager View and setting the adapter
         pager = (ViewPager) findViewById(R.id.pager);
@@ -99,17 +104,17 @@ public class MainActivity extends AppCompatActivity {
         boolean checked = ((RadioButton) view).isChecked();
 
         // Check which radio button was clicked
-        switch(view.getId()) {
+        switch (view.getId()) {
             case R.id.radio_personal:
                 if (checked) {
                     journeyType = true;
                 }
-                    break;
+                break;
             case R.id.radio_work:
                 if (checked) {
                     journeyType = false;
                 }
-                    break;
+                break;
         }
     }
 
@@ -123,40 +128,57 @@ public class MainActivity extends AppCompatActivity {
         newFragment.show(getSupportFragmentManager(), "timePicker");
     }
 
-    public void saveData(View view){
+    public void saveData(View view) {
         Journey current = new Journey();
 
         //read user input
-        android.support.design.widget.TextInputEditText odometerStart   =
-                (android.support.design.widget.TextInputEditText)findViewById(R.id.odometerStart);
+        android.support.design.widget.TextInputEditText odometerStart =
+                (android.support.design.widget.TextInputEditText) findViewById(R.id.odometerStart);
+        String odoStartStr;
+        odoStartStr = odometerStart.getText().toString();
 
-        android.support.design.widget.TextInputEditText odometerStop   =
-                (android.support.design.widget.TextInputEditText)findViewById(R.id.odometerStop);
+        android.support.design.widget.TextInputEditText odometerStop =
+                (android.support.design.widget.TextInputEditText) findViewById(R.id.odometerStop);
+        String odoStopStr;
+        odoStopStr = odometerStop.getText().toString();
 
-        TextView dateView = (TextView)findViewById(R.id.datePicker);
+
+        TextView dateView = (TextView) findViewById(R.id.datePicker);
         String dateStr = dateView.getText().toString();
-        TextView timeView = (TextView)findViewById(R.id.timePicker);
+        TextView timeView = (TextView) findViewById(R.id.timePicker);
         String timeStr = timeView.getText().toString();
 
         String dateTimeStr = new String();
-        dateTimeStr= dateTimeStr.concat(dateStr).
+        dateTimeStr = dateTimeStr.concat(dateStr).
                 concat(" ").
                 concat(timeStr);
 
-        //save user input
-        current.odometerStart = Long.parseLong(odometerStart.getText().toString());
-        current.odometerStop = Long.parseLong(odometerStop.getText().toString());
-        current.type = journeyType;
-        current.dateTime = dateTimeStr;
+        EditText description = (EditText) findViewById(R.id.description);
+        String descStr = "";
+        descStr = description.getText().toString();
 
-        databaseHelper.addJourney(current);
+        if(!(odoStartStr.equals("")) && !(odoStopStr.equals("")) && !(dateStr.equals(""))) {
+            //save user input
+            current.odometerStart = Long.parseLong(odoStartStr);
+            current.odometerStop = Long.parseLong(odoStopStr);
+            current.type = journeyType;
+            current.dateTime = dateTimeStr;
+            current.description = descStr;
+            databaseHelper.addJourney(current);
+
+            Toast.makeText(this,getText(R.string.saveSuccess), Toast.LENGTH_LONG).show();
+        }
+        else{
+            Toast.makeText(this,getText(R.string.errEmptyFields), Toast.LENGTH_LONG).show();
+        }
+
     }
 
-    public void discardData(View view){
+    public void discardData(View view) {
 
         //reset the radio buttons
-        RadioButton work = (RadioButton)findViewById(R.id.radio_work);
-        RadioButton personal = (RadioButton)findViewById(R.id.radio_personal);
+        RadioButton work = (RadioButton) findViewById(R.id.radio_work);
+        RadioButton personal = (RadioButton) findViewById(R.id.radio_personal);
         personal.setChecked(true);
         work.setChecked(false);
 
@@ -166,8 +188,38 @@ public class MainActivity extends AppCompatActivity {
         TextView tvDate = (TextView) this.findViewById(R.id.datePicker);
         tvDate.setText(this.getText(R.string.date));
 
+        //reset description
+        TextView tvDesc = (TextView) this.findViewById(R.id.description);
+        tvDesc.setText(this.getText(R.string.description));
+
         //reset odometer readings
 
     }
-}
 
+
+    private class readJourneys extends AsyncTask<String, Void, List<Journey>> {
+
+        @Override
+        protected List<Journey> doInBackground(String... params) {
+            List<Journey> journeys = databaseHelper.getAllJourneys();
+            for (Journey journey : journeys) {
+
+            }
+            return journeys;
+        }
+
+        @Override
+        protected void onPostExecute(List<Journey> result) {
+
+        }
+
+        @Override
+        protected void onPreExecute() {
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+        }
+    }
+
+}

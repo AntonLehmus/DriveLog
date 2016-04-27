@@ -7,13 +7,18 @@
     <string name="action_settings">Settings</string>
     <string name="odometer_start">Matkamittari lähtiessä</string>
     <string name="odometer_stop">Matkamittari perillä</string>
+    <string name="type">Tyyppi</string>
+    <string name="length">Matka</string>
     <string name="personal">Oma</string>
     <string name="work">Työ</string>
     <string name="log_type">Matkan tyyppi</string>
     <string name="date">Päivämäärä</string>
     <string name="time">Kellonaika</string>
+    <string name="description">Kuvaus</string>
     <string name="btnSave">Talenna</string>
     <string name="btnDiscard">Hylkää</string>
+    <string name="errEmptyFields">Täytä kaikki kentät</string>
+    <string name="saveSuccess">Tiedot tallenettu</string>
 
 
 </resources>
