@@ -55,12 +55,12 @@ public class JourneysAdapter extends ArrayAdapter<Journey> {
         viewHolder.length.setText(Long.toString(journey.odometerStop-journey.odometerStart)+" km");
 
         //parse calendar datetime
-        Calendar cal = Calendar.getInstance(TimeZone.getDefault());
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("gmt"));
         cal.setTimeInMillis(TimeUnit.SECONDS.toMillis(journey.dateTime));
 
         //full date, short time.
         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.FULL,DateFormat.SHORT);
-        df.setTimeZone(TimeZone.getDefault());
+        df.setTimeZone(TimeZone.getTimeZone("gmt"));
 
         viewHolder.dateTime.setText(df.format(cal.getTime()));
 

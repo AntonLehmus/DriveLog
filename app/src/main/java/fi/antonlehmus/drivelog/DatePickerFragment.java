@@ -31,7 +31,7 @@ public class DatePickerFragment extends DialogFragment
     }
 
     public void onDateSet(DatePicker view, int year, int month, int day) {
-        Calendar myCalendar = Calendar.getInstance(TimeZone.getDefault());
+        Calendar myCalendar = Calendar.getInstance(TimeZone.getTimeZone("gmt"));
         myCalendar.set(Calendar.YEAR, year);
         myCalendar.set(Calendar.MONTH, month);
         myCalendar.set(Calendar.DAY_OF_MONTH, day);
