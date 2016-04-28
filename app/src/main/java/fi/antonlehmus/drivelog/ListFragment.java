@@ -13,38 +13,32 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.raizlabs.android.dbflow.sql.language.Select;
+
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class ListFragment extends Fragment {
 
-    private dbHelper databaseHelper;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        // Get singleton instance of database
-        databaseHelper = dbHelper.getInstance(getActivity());
-
-        List<Journey> journeys = databaseHelper.getAllJourneys();
 
 
         View view = inflater.inflate(R.layout.fragment_list, container, false);
 
+        //read all journeys from database
+        List<Journey> journeyList = new Select().from(Journey.class).queryList();
+
         // Construct the data source
-        ArrayList<Journey> arrayOfUsers = new ArrayList<Journey>();
+        ArrayList<Journey> journeyArray = new ArrayList<Journey>(journeyList);
         // Create the adapter to convert the array to views
-        JourneysAdapter adapter = new JourneysAdapter(getActivity(), arrayOfUsers);
+        JourneysAdapter adapter = new JourneysAdapter(getActivity(), journeyArray);
         // Attach the adapter to a ListView
         ListView listView = (ListView) view.findViewById(R.id.journeyList);
         listView.setAdapter(adapter);
-
-        for (Journey journey : journeys) {
-            Log.d("ListFragment",journey.toString());
-            adapter.add(journey);
-        }
 
         return view;
     }

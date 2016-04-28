@@ -19,6 +19,8 @@
     <string name="btnDiscard">Hylkää</string>
     <string name="errEmptyFields">Täytä kaikki kentät</string>
     <string name="saveSuccess">Tiedot tallenettu</string>
+    <string name="odometerStartLargerThanStop">Tarkasta mittarilukemat!</string>
+
 
 
 </resources>

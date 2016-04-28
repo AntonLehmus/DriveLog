@@ -1,9 +1,6 @@
 package fi.antonlehmus.drivelog;
 
 
-
-
-
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.view.ViewPager;
@@ -18,6 +15,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.raizlabs.android.dbflow.config.FlowManager;
+import com.raizlabs.android.dbflow.sql.language.SQLite;
 
 import SlidingTab.SlidingTabLayout;
 
@@ -31,12 +30,12 @@ public class MainActivity extends AppCompatActivity {
     private PagerAdapter adapter;
     private SlidingTabLayout tabs;
     private int Numboftabs = 2;
-    private dbHelper databaseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         String[] Titles = new String[]{this.getString(R.string.log_fragment_title), this.getString(R.string.list_fragment_title)};
         Numboftabs = Titles.length;
@@ -68,9 +67,6 @@ public class MainActivity extends AppCompatActivity {
 
         // Setting the ViewPager For the SlidingTabsLayout
         tabs.setViewPager(pager);
-
-        // Get singleton instance of database
-        databaseHelper = dbHelper.getInstance(this);
 
     }
 
@@ -128,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void saveData(View view) {
-        Journey current = new Journey();
+        Journey newJourney = new Journey();
 
         //read user input
         android.support.design.widget.TextInputEditText odometerStart =
@@ -157,15 +153,21 @@ public class MainActivity extends AppCompatActivity {
         descStr = description.getText().toString();
 
         if(!(odoStartStr.equals("")) && !(odoStopStr.equals("")) && !(dateStr.equals(""))) {
+            if(Long.parseLong(odoStartStr) > Long.parseLong(odoStopStr)){
+                Toast.makeText(this,getText(R.string.odometerStartLargerThanStop), Toast.LENGTH_LONG).show();
+            }
+            else{
             //save user input
-            current.odometerStart = Long.parseLong(odoStartStr);
-            current.odometerStop = Long.parseLong(odoStopStr);
-            current.type = journeyType;
-            current.dateTime = dateTimeStr;
-            current.description = descStr;
-            databaseHelper.addJourney(current);
+                newJourney.odometerStart = Long.parseLong(odoStartStr);
+                newJourney.odometerStop = Long.parseLong(odoStopStr);
+                newJourney.type = journeyType;
+                newJourney.dateTime = dateTimeStr;
+                newJourney.description = descStr;
 
-            Toast.makeText(this,getText(R.string.saveSuccess), Toast.LENGTH_LONG).show();
+                newJourney.save();
+
+                Toast.makeText(this,getText(R.string.saveSuccess), Toast.LENGTH_LONG).show();
+            }
         }
         else{
             Toast.makeText(this,getText(R.string.errEmptyFields), Toast.LENGTH_LONG).show();
