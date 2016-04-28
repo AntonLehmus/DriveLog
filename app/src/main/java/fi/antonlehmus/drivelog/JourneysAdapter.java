@@ -12,6 +12,7 @@ import android.widget.TextView;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 public class JourneysAdapter extends ArrayAdapter<Journey> {
@@ -49,13 +50,17 @@ public class JourneysAdapter extends ArrayAdapter<Journey> {
         viewHolder.type.setText(journey.type);
         viewHolder.description.setText(journey.description);
 
-        viewHolder.length.setText(Long.toString(journey.odometerStop-journey.odometerStart));
+        //PURKKARATKASUU
+        //TODO: Localization
+        viewHolder.length.setText(Long.toString(journey.odometerStop-journey.odometerStart)+" km");
 
         //parse calendar datetime
-        Calendar cal = Calendar.getInstance();
+        Calendar cal = Calendar.getInstance(TimeZone.getDefault());
         cal.setTimeInMillis(TimeUnit.SECONDS.toMillis(journey.dateTime));
 
-        DateFormat df = DateFormat.getDateTimeInstance();
+        //full date, short time.
+        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.FULL,DateFormat.SHORT);
+        df.setTimeZone(TimeZone.getDefault());
 
         viewHolder.dateTime.setText(df.format(cal.getTime()));
 
