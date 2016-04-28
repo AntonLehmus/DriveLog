@@ -1,6 +1,8 @@
 package fi.antonlehmus.drivelog;
 
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.view.ViewPager;
@@ -17,6 +19,10 @@ import android.widget.Toast;
 
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
+import com.raizlabs.android.dbflow.sql.language.Select;
+
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import SlidingTab.SlidingTabLayout;
 
@@ -143,10 +149,8 @@ public class MainActivity extends AppCompatActivity {
         TextView timeView = (TextView) findViewById(R.id.timePicker);
         String timeStr = timeView.getText().toString();
 
-        String dateTimeStr = new String();
-        dateTimeStr = dateTimeStr.concat(dateStr).
-                concat(" ").
-                concat(timeStr);
+        SharedPreferences sharedPref =  getSharedPreferences(constants.SAVED_DATE_TIME, Context.MODE_PRIVATE);
+        Long dateTime = sharedPref.getLong(constants.KEY_DATE,0)+sharedPref.getLong(constants.KEY_TIME,0);
 
         EditText description = (EditText) findViewById(R.id.description);
         String descStr = "";
@@ -161,7 +165,7 @@ public class MainActivity extends AppCompatActivity {
                 newJourney.odometerStart = Long.parseLong(odoStartStr);
                 newJourney.odometerStop = Long.parseLong(odoStopStr);
                 newJourney.type = journeyType;
-                newJourney.dateTime = dateTimeStr;
+                newJourney.dateTime = (int) TimeUnit.MILLISECONDS.toSeconds(dateTime);
                 newJourney.description = descStr;
 
                 newJourney.save();
@@ -194,6 +198,10 @@ public class MainActivity extends AppCompatActivity {
         tvDesc.setText(this.getText(R.string.description));
 
         //reset odometer readings
+        List<Journey> journeyList = new Select(Journey_Table.odometerStop).from(Journey.class).orderBy(Journey_Table.dateTime).queryList();
+
+        TextView tvOdometerStart = (TextView) this.findViewById(R.id.odometerStart);
+        tvDesc.setText(this.getText(R.string.description));
 
     }
 

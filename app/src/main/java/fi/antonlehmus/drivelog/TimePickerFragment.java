@@ -3,6 +3,8 @@ package fi.antonlehmus.drivelog;
 
 import android.app.Dialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.text.format.DateFormat;
@@ -32,6 +34,12 @@ public class TimePickerFragment extends DialogFragment
         Calendar myCalendar = Calendar.getInstance();
         myCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
         myCalendar.set(Calendar.MINUTE, minute);
+
+        //save time
+        SharedPreferences sharedPref = getActivity().getSharedPreferences(constants.SAVED_DATE_TIME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putLong(constants.KEY_TIME, myCalendar.getTimeInMillis ());
+        editor.apply();
 
         SimpleDateFormat df = new SimpleDateFormat("HH:mm");
         String  currentTime = df.format(myCalendar.getTime());

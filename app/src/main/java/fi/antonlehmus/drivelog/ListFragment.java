@@ -33,12 +33,14 @@ public class ListFragment extends Fragment {
         List<Journey> journeyList = new Select().from(Journey.class).queryList();
 
         // Construct the data source
-        ArrayList<Journey> journeyArray = new ArrayList<Journey>(journeyList);
+        ArrayList<Journey> journeyArray = new ArrayList<Journey>();
         // Create the adapter to convert the array to views
         JourneysAdapter adapter = new JourneysAdapter(getActivity(), journeyArray);
         // Attach the adapter to a ListView
         ListView listView = (ListView) view.findViewById(R.id.journeyList);
         listView.setAdapter(adapter);
+
+        journeyArray = new ArrayList<Journey>(journeyList);
 
         return view;
     }

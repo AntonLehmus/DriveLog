@@ -21,7 +21,7 @@ public class Journey extends BaseModel {
     @Column
     boolean type; //private = true
     @Column
-    String dateTime;
+    int dateTime;
     @Column
     String description;
 }

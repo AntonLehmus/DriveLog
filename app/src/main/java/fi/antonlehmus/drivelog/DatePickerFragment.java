@@ -3,6 +3,8 @@ package fi.antonlehmus.drivelog;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.widget.DatePicker;
@@ -32,6 +34,12 @@ public class DatePickerFragment extends DialogFragment
         myCalendar.set(Calendar.YEAR, year);
         myCalendar.set(Calendar.MONTH, month);
         myCalendar.set(Calendar.DAY_OF_MONTH, day);
+
+        //save time
+        SharedPreferences sharedPref = getActivity().getSharedPreferences(constants.SAVED_DATE_TIME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putLong(constants.KEY_DATE, myCalendar.getTimeInMillis ());
+        editor.apply();
 
         SimpleDateFormat df = new SimpleDateFormat("dd.MM.yyyy");
         String  currentTime = df.format(myCalendar.getTime());
