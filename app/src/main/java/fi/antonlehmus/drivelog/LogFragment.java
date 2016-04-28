@@ -17,6 +17,7 @@ public class LogFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_log, container, false);
+        MainActivity.resetOdoMeterFields(view);
         return view;
     }
 

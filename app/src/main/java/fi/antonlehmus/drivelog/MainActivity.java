@@ -21,6 +21,7 @@ import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
+import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -198,11 +199,26 @@ public class MainActivity extends AppCompatActivity {
         tvDesc.setText(this.getText(R.string.description));
 
         //reset odometer readings
-        List<Journey> journeyList = new Select(Journey_Table.odometerStop).from(Journey.class).orderBy(Journey_Table.dateTime).queryList();
-
-        TextView tvOdometerStart = (TextView) this.findViewById(R.id.odometerStart);
-        tvDesc.setText(this.getText(R.string.description));
+        resetOdoMeterFields(getWindow().getDecorView());
 
     }
 
+    public static void resetOdoMeterFields(View view){
+        List<Journey> latestOdoStop = new Select(Journey_Table.odometerStop).from(Journey.class).orderBy(Journey_Table.dateTime,true).limit(1).queryList();
+
+        String odoStartStr = Long.toString(latestOdoStop.get(0).odometerStop);
+
+        //reset odometerStart reading
+        android.support.design.widget.TextInputEditText odoMeterStart = (android.support.design.widget.TextInputEditText) view.findViewById(R.id.odometerStart);
+        odoMeterStart.setText(odoStartStr);
+
+        //reset odometerStop reading
+        android.support.design.widget.TextInputEditText odoMeterStop = (android.support.design.widget.TextInputEditText) view.findViewById(R.id.odometerStop);
+
+        //pre-fill odometerStop field
+        String odoStopStr = odoStartStr.substring(0,(int)(odoStartStr.length()*0.7));
+
+        odoMeterStop.setText(odoStopStr);
+
+    }
 }
