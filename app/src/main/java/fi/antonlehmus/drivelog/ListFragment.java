@@ -10,7 +10,9 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
+
 
 import com.raizlabs.android.dbflow.list.FlowQueryList;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
@@ -20,6 +22,7 @@ import java.util.ArrayList;
 
 public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     private SwipeRefreshLayout swipeRefreshLayout;
+    private JourneysAdapter adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -46,6 +49,26 @@ public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         return view;
     }
+    @Override
+    public void onResume(){
+        super.onResume();
+
+        // Construct the data source
+        ArrayList<Journey> journeyArray = new ArrayList<>();
+        // Create the adapter to convert the array to views
+        adapter = new JourneysAdapter(getActivity(), journeyArray);
+        // Attach the adapter to a ListView
+        ListView listView = (ListView) getActivity().findViewById(R.id.journeyList);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position,
+                                    long id) {
+                //DELETE AND UPDATE DIALOG FRAGMENT HERE
+            }
+        });
+        listView.setAdapter(adapter);
+
+    }
 
     @Override
     public void onRefresh() {
@@ -66,13 +89,6 @@ public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         //read all journeys from database
         FlowQueryList<Journey> list = new FlowQueryList<>(SQLite.select().from(Journey.class).orderBy(Journey_Table.dateTime,false));
 
-        // Construct the data source
-        ArrayList<Journey> journeyArray = new ArrayList<Journey>();
-        // Create the adapter to convert the array to views
-        JourneysAdapter adapter = new JourneysAdapter(getActivity(), journeyArray);
-        // Attach the adapter to a ListView
-        ListView listView = (ListView) getActivity().findViewById(R.id.journeyList);
-        listView.setAdapter(adapter);
 
         adapter.addAll(list);
         swipeRefreshLayout.setRefreshing(false);
