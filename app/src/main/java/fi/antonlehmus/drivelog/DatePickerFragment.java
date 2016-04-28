@@ -34,6 +34,8 @@ public class DatePickerFragment extends DialogFragment
         myCalendar.set(Calendar.YEAR, year);
         myCalendar.set(Calendar.MONTH, month);
         myCalendar.set(Calendar.DAY_OF_MONTH, day);
+        myCalendar.set(Calendar.HOUR_OF_DAY, 0);
+        myCalendar.set(Calendar.MINUTE, 0);
 
         //save time
         SharedPreferences sharedPref = getActivity().getSharedPreferences(constants.SAVED_DATE_TIME, Context.MODE_PRIVATE);

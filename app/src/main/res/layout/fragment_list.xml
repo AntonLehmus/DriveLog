@@ -1,9 +1,13 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
+    android:gravity="top"
+    android:orientation="vertical"
     tools:context="fi.antonlehmus.drivelog.ListFragment">
+
+
+   <include layout="@layout/list_view_item"/>
 
    <ListView
        android:id="@+id/journeyList"
@@ -12,4 +16,4 @@
 
    </ListView>
 
-</FrameLayout>
+</LinearLayout>

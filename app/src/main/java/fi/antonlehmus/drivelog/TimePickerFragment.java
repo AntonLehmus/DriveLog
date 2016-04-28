@@ -32,6 +32,7 @@ public class TimePickerFragment extends DialogFragment
 
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
         Calendar myCalendar = Calendar.getInstance();
+        myCalendar.setTimeInMillis(0);//set to start of Unix time
         myCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
         myCalendar.set(Calendar.MINUTE, minute);
 

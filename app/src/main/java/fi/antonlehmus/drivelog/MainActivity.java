@@ -18,10 +18,10 @@ import android.widget.Toast;
 
 
 import com.raizlabs.android.dbflow.config.FlowManager;
-import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.raizlabs.android.dbflow.sql.language.Select;
+import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
+import com.raizlabs.android.dbflow.structure.database.transaction.ITransaction;
 
-import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -30,8 +30,12 @@ import SlidingTab.SlidingTabLayout;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static Boolean journeyType = true; //personal
+    public  String odoStartStr;
+    public  String odoStopStr;
+    public  String descStr;
+    public  Long dateTime;
 
+    private String journeyType;
     private Toolbar toolbar;
     private ViewPager pager;
     private PagerAdapter adapter;
@@ -60,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
         pager = (ViewPager) findViewById(R.id.pager);
         pager.setAdapter(adapter);
 
-        // Assiging the Sliding Tab Layout View
+        // Assign the Sliding Tab Layout View
         tabs = (SlidingTabLayout) findViewById(R.id.tabs);
         tabs.setDistributeEvenly(true); // To make the Tabs Fixed set this true, This makes the tabs Space Evenly in Available width
 
@@ -74,6 +78,8 @@ public class MainActivity extends AppCompatActivity {
 
         // Setting the ViewPager For the SlidingTabsLayout
         tabs.setViewPager(pager);
+
+        journeyType = this.getString(R.string.personal);
 
     }
 
@@ -109,12 +115,12 @@ public class MainActivity extends AppCompatActivity {
         switch (view.getId()) {
             case R.id.radio_personal:
                 if (checked) {
-                    journeyType = true;
+                    journeyType = this.getString(R.string.personal);
                 }
                 break;
             case R.id.radio_work:
                 if (checked) {
-                    journeyType = false;
+                    journeyType = this.getString(R.string.work);;
                 }
                 break;
         }
@@ -131,17 +137,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void saveData(View view) {
-        Journey newJourney = new Journey();
-
         //read user input
         android.support.design.widget.TextInputEditText odometerStart =
                 (android.support.design.widget.TextInputEditText) findViewById(R.id.odometerStart);
-        String odoStartStr;
         odoStartStr = odometerStart.getText().toString();
 
         android.support.design.widget.TextInputEditText odometerStop =
                 (android.support.design.widget.TextInputEditText) findViewById(R.id.odometerStop);
-        String odoStopStr;
         odoStopStr = odometerStop.getText().toString();
 
 
@@ -151,27 +153,33 @@ public class MainActivity extends AppCompatActivity {
         String timeStr = timeView.getText().toString();
 
         SharedPreferences sharedPref =  getSharedPreferences(constants.SAVED_DATE_TIME, Context.MODE_PRIVATE);
-        Long dateTime = sharedPref.getLong(constants.KEY_DATE,0)+sharedPref.getLong(constants.KEY_TIME,0);
+        dateTime = sharedPref.getLong(constants.KEY_DATE,0)+sharedPref.getLong(constants.KEY_TIME,0);
 
         EditText description = (EditText) findViewById(R.id.description);
-        String descStr = "";
         descStr = description.getText().toString();
 
         if(!(odoStartStr.equals("")) && !(odoStopStr.equals("")) && !(dateStr.equals(""))) {
-            if(Long.parseLong(odoStartStr) > Long.parseLong(odoStopStr)){
+            if(Long.parseLong(odoStartStr) >= Long.parseLong(odoStopStr)){
                 Toast.makeText(this,getText(R.string.odometerStartLargerThanStop), Toast.LENGTH_LONG).show();
             }
             else{
-            //save user input
-                newJourney.odometerStart = Long.parseLong(odoStartStr);
-                newJourney.odometerStop = Long.parseLong(odoStopStr);
-                newJourney.type = journeyType;
-                newJourney.dateTime = (int) TimeUnit.MILLISECONDS.toSeconds(dateTime);
-                newJourney.description = descStr;
+                FlowManager.getDatabase(DBJourney.class).executeTransaction(new ITransaction() {
+                    @Override
+                    public void execute(DatabaseWrapper databaseWrapper) {
+                        Journey newJourney = new Journey();
+                        //save user input
+                        newJourney.setOdometerStart(Long.parseLong(odoStartStr));
+                        newJourney.setOdometerStop(Long.parseLong(odoStopStr));
+                        newJourney.setType(journeyType);
+                        newJourney.setDateTime((int) TimeUnit.MILLISECONDS.toSeconds(dateTime));
+                        newJourney.setDescription(descStr);
 
-                newJourney.save();
+                        newJourney.save(databaseWrapper); // use wrapper (from BaseModel)
+                    }
+                });
 
                 Toast.makeText(this,getText(R.string.saveSuccess), Toast.LENGTH_LONG).show();
+                discardData(getWindow().getDecorView());
             }
         }
         else{
@@ -204,21 +212,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public static void resetOdoMeterFields(View view){
-        List<Journey> latestOdoStop = new Select(Journey_Table.odometerStop).from(Journey.class).orderBy(Journey_Table.dateTime,true).limit(1).queryList();
+        List<Journey> latestOdoStop = new Select(Journey_Table.odometerStop).from(Journey.class).orderBy(Journey_Table.dateTime,false).limit(1).queryList();
 
-        String odoStartStr = Long.toString(latestOdoStop.get(0).odometerStop);
+        if(latestOdoStop.size()>0) {
+            String odoStartStr = Long.toString(latestOdoStop.get(0).odometerStop);
 
-        //reset odometerStart reading
-        android.support.design.widget.TextInputEditText odoMeterStart = (android.support.design.widget.TextInputEditText) view.findViewById(R.id.odometerStart);
-        odoMeterStart.setText(odoStartStr);
+            //reset odometerStart reading
+            android.support.design.widget.TextInputEditText odoMeterStart = (android.support.design.widget.TextInputEditText) view.findViewById(R.id.odometerStart);
+            odoMeterStart.setText(odoStartStr);
 
-        //reset odometerStop reading
-        android.support.design.widget.TextInputEditText odoMeterStop = (android.support.design.widget.TextInputEditText) view.findViewById(R.id.odometerStop);
+            //reset odometerStop reading
+            android.support.design.widget.TextInputEditText odoMeterStop = (android.support.design.widget.TextInputEditText) view.findViewById(R.id.odometerStop);
 
-        //pre-fill odometerStop field
-        String odoStopStr = odoStartStr.substring(0,(int)(odoStartStr.length()*0.7));
+            //pre-fill odometerStop field
+            String odoStopStr = odoStartStr.substring(0, (int) (odoStartStr.length() * 0.7));
 
-        odoMeterStop.setText(odoStopStr);
+            odoMeterStop.setText(odoStopStr);
+        }
 
     }
 }
