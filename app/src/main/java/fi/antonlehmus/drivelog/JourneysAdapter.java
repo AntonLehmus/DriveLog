@@ -55,7 +55,7 @@ public class JourneysAdapter extends ArrayAdapter<Journey> {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(TimeUnit.SECONDS.toMillis(journey.dateTime));
 
-        DateFormat df = DateFormat.getDateInstance();
+        DateFormat df = DateFormat.getDateTimeInstance();
 
         viewHolder.dateTime.setText(df.format(cal.getTime()));
 
