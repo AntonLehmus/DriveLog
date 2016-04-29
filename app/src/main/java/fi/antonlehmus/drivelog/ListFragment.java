@@ -15,7 +15,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 
-import com.raizlabs.android.dbflow.list.FlowQueryList;
+import com.raizlabs.android.dbflow.list.FlowCursorList;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 
 import java.util.ArrayList;
@@ -25,6 +25,8 @@ public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private SwipeRefreshLayout swipeRefreshLayout;
     private JourneysAdapter adapter;
 
+    public static FlowCursorList<Journey> list;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -33,6 +35,21 @@ public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
         swipeRefreshLayout.setOnRefreshListener(this);
+
+        //read all journeys from database
+        list = new FlowCursorList<>(SQLite.select().from(Journey.class).orderBy(Journey_Table.dateTime,false));
+
+        return view;
+    }
+    @Override
+    public void onResume(){
+        super.onResume();
+
+        // Construct the data source
+        final ArrayList<Journey> journeyArray = new ArrayList<>();
+        // Create the adapter to convert the array to views
+        adapter = new JourneysAdapter(getActivity(), journeyArray);
+        // Attach the adapter to a ListView
 
         /**
          * Showing Swipe Refresh animation on activity create
@@ -48,19 +65,6 @@ public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                                 }
         );
 
-        return view;
-    }
-    @Override
-    public void onResume(){
-        super.onResume();
-
-        // Construct the data source
-        final ArrayList<Journey> journeyArray = new ArrayList<>();
-        // Create the adapter to convert the array to views
-        adapter = new JourneysAdapter(getActivity(), journeyArray);
-        // Attach the adapter to a ListView
-
-        refresh();
         //listen for listView item clicks
         ListView listView = (ListView) getActivity().findViewById(R.id.journeyList);
         //listen for long clicks
@@ -79,11 +83,21 @@ public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         });
         listView.setAdapter(adapter);
 
+        //listen for database changes
+        list.addOnCursorRefreshListener(new FlowCursorList.OnCursorRefreshListener<Journey>() {
+            @Override
+            public void onCursorRefreshed(FlowCursorList<Journey> cursorList) {
+                refresh();
+            }
+        });
+
+        
+        list.refresh();
     }
 
     @Override
     public void onRefresh() {
-        refresh();
+        list.refresh();
     }
 
     //allows both modes
@@ -97,11 +111,10 @@ public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     }
 
     private void refresh(){
-        //read all journeys from database
-        FlowQueryList<Journey> list = new FlowQueryList<>(SQLite.select().from(Journey.class).orderBy(Journey_Table.dateTime,false));
-
-
-        adapter.addAll(list);
+        if(!adapter.isEmpty()){
+            adapter.clear();
+        }
+        adapter.addAll(list.getAll());
         adapter.notifyDataSetChanged();
         swipeRefreshLayout.setRefreshing(false);
     }

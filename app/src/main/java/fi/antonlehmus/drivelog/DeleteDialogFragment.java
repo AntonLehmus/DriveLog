@@ -56,6 +56,8 @@ public class DeleteDialogFragment extends DialogFragment {
                         .and(Journey_Table.odometerStop.is(odoStop))
                         .async()
                         .execute();
+
+                ListFragment.list.refresh();
             }
 
         });

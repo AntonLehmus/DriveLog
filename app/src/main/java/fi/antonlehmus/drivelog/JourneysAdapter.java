@@ -16,6 +16,7 @@ import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 public class JourneysAdapter extends ArrayAdapter<Journey> {
+
     public JourneysAdapter(Context context, ArrayList<Journey> journeys) {
         super(context, 0, journeys);
     }

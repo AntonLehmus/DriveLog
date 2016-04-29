@@ -5,16 +5,13 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -183,6 +180,7 @@ public class MainActivity extends AppCompatActivity {
 
                 Toast.makeText(this,getText(R.string.saveSuccess), Toast.LENGTH_LONG).show();
                 discardData(getWindow().getDecorView());
+                ListFragment.list.refresh();
             }
         }
         else{
@@ -207,7 +205,7 @@ public class MainActivity extends AppCompatActivity {
 
         //reset description
         TextView tvDesc = (TextView) this.findViewById(R.id.description);
-        tvDesc.setText(this.getText(R.string.description));
+        tvDesc.setText("");
 
         //reset odometer readings
         resetOdoMeterFields(getWindow().getDecorView());
