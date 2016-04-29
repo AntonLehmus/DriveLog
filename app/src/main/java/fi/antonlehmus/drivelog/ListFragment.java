@@ -73,6 +73,7 @@ public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 DeleteDialogFragment alertDialog = DeleteDialogFragment.newInstance(
                         getString(R.string.deleteDialogTitle),journeyArray.get(position).odometerStart,journeyArray.get(position).odometerStop);
                 alertDialog.show(fm, "fragment_alert");
+                refresh();
                 return true;
             }
         });
@@ -101,6 +102,7 @@ public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
 
         adapter.addAll(list);
+        adapter.notifyDataSetChanged();
         swipeRefreshLayout.setRefreshing(false);
     }
 

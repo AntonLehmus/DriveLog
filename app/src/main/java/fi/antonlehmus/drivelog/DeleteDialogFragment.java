@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.widget.EditText;
 
 import com.raizlabs.android.dbflow.sql.language.SQLite;
@@ -55,7 +56,6 @@ public class DeleteDialogFragment extends DialogFragment {
                         .and(Journey_Table.odometerStop.is(odoStop))
                         .async()
                         .execute();
-
             }
 
         });
