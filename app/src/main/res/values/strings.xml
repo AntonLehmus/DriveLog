@@ -20,6 +20,10 @@
     <string name="errEmptyFields">Täytä kaikki kentät</string>
     <string name="saveSuccess">Tiedot tallenettu</string>
     <string name="odometerStartLargerThanStop">Tarkasta mittarilukemat!</string>
+    <string name="delete">Poista</string>
+    <string name="deleteDialogTitle">Poista ajo</string>
+    <string name="deleteDialogConfirm">Haluatko varmasti poistaa?</string>
+    <string name="cancel">Peruuta</string>
 
 
 

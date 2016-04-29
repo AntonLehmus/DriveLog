@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -58,12 +59,19 @@ public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         // Create the adapter to convert the array to views
         adapter = new JourneysAdapter(getActivity(), journeyArray);
         // Attach the adapter to a ListView
+
+        refresh();
+        //listen for listView item clicks
         ListView listView = (ListView) getActivity().findViewById(R.id.journeyList);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        //listen for long clicks
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position,
-                                    long id) {
-                //DELETE AND UPDATE DIALOG FRAGMENT HERE
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position,
+                                           long id) {
+                FragmentManager fm = getChildFragmentManager();
+                DeleteDialogFragment alertDialog = DeleteDialogFragment.newInstance(getString(R.string.deleteDialogTitle));
+                alertDialog.show(fm, "fragment_alert");
+                return true;
             }
         });
         listView.setAdapter(adapter);

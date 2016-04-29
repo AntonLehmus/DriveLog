@@ -22,7 +22,8 @@
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
                android:divider="@color/colorAccent"
-               android:dividerHeight="@dimen/dividerSize">
+               android:dividerHeight="@dimen/dividerSize"
+               android:animateLayoutChanges="true" >
 
            </ListView>
     </android.support.v4.widget.SwipeRefreshLayout>
