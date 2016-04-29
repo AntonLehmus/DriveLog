@@ -55,7 +55,7 @@ public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         super.onResume();
 
         // Construct the data source
-        ArrayList<Journey> journeyArray = new ArrayList<>();
+        final ArrayList<Journey> journeyArray = new ArrayList<>();
         // Create the adapter to convert the array to views
         adapter = new JourneysAdapter(getActivity(), journeyArray);
         // Attach the adapter to a ListView
@@ -68,8 +68,10 @@ public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position,
                                            long id) {
+
                 FragmentManager fm = getChildFragmentManager();
-                DeleteDialogFragment alertDialog = DeleteDialogFragment.newInstance(getString(R.string.deleteDialogTitle));
+                DeleteDialogFragment alertDialog = DeleteDialogFragment.newInstance(
+                        getString(R.string.deleteDialogTitle),journeyArray.get(position).odometerStart,journeyArray.get(position).odometerStop);
                 alertDialog.show(fm, "fragment_alert");
                 return true;
             }
