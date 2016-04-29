@@ -1,13 +1,23 @@
 package fi.antonlehmus.drivelog;
 
 
+import android.Manifest;
+import android.annotation.TargetApi;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,19 +27,29 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.opencsv.CSVWriter;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.list.FlowCursorList;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 import com.raizlabs.android.dbflow.structure.database.transaction.ITransaction;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.util.Calendar;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 import SlidingTab.SlidingTabLayout;
 
 
 public class MainActivity extends AppCompatActivity {
+
+    private static final String TAG = "MainActivity";
+    private static final int FILE_PERMISSIONS_REQUEST = 1;
 
     public  String odoStartStr;
     public  String odoStopStr;
@@ -102,6 +122,16 @@ public class MainActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             //implement later
+            return true;
+        }
+        if (id == R.id.action_export) {
+
+            if (Build.VERSION.SDK_INT >= 23){
+                getPermissionToStorage();
+            }
+
+            ExportDatabaseCSVTask task=new ExportDatabaseCSVTask();
+            task.execute();
             return true;
         }
 
@@ -232,6 +262,129 @@ public class MainActivity extends AppCompatActivity {
             odoMeterStop.setText(odoStopStr);
         }
 
+    }
+
+    @TargetApi(23)
+    public void getPermissionToStorage() {
+        //Always check for permission (even if permission has already been granted)
+        // since the user can revoke permissions at any time through Settings
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            // The permission is NOT already granted.
+            // Check if the user has been asked about this permission already and denied
+            // it. If so, we want to give more explanation about why the permission is needed.
+            if (shouldShowRequestPermissionRationale(
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                // Show our own UI to explain to the user why we need to read the contacts
+                // before actually requesting the permission and showing the default UI
+            }
+
+            // Fire off an async request to actually get the permission
+            // This will show the standard permission request dialog UI
+            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    FILE_PERMISSIONS_REQUEST);
+        }
+    }
+
+    // Callback with the request from calling requestPermissions(...)
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String permissions[],
+                                           @NonNull int[] grantResults) {
+        if (requestCode == FILE_PERMISSIONS_REQUEST) {
+            if (grantResults.length == 1 &&
+                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "Storage permission granted", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Storage permission denied", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
+
+
+
+    private class ExportDatabaseCSVTask extends AsyncTask<String, Void, Boolean> {
+
+        private final ProgressDialog dialog = new ProgressDialog(MainActivity.this);
+
+        File file=null;
+
+        @Override
+        protected void onPreExecute() {
+
+            this.dialog.setMessage("Exporting database...");
+            this.dialog.show();
+
+        }
+
+        @Override
+        protected Boolean doInBackground(final String... args){
+
+            File dbFile=getDatabasePath(DBJourney.NAME);
+            Log.v(TAG, "Db path is: "+dbFile);  //get the path of db
+
+            File exportDir = new File(Environment.getExternalStorageDirectory(), "");
+            if (!exportDir.exists()) {
+                exportDir.mkdirs();
+            }
+
+            file = new File(exportDir, getString(R.string.app_name)+".csv");
+            try {
+
+                file.createNewFile();
+                CSVWriter csvWrite = new CSVWriter(new FileWriter(file));
+
+                Journey journey=null;
+
+                // this is the Column of the table and same for Header of CSV file
+                String arrStr1[] ={getString(R.string.type),getString(R.string.date), getString(R.string.length)};
+                csvWrite.writeNext(arrStr1);
+
+                if( ListFragment.list.getCount() > 0)
+                {
+                    for(int index=0; index < ListFragment.list.getCount(); index++)
+                    {
+                        journey = ListFragment.list.getItem(index);
+
+                        //parse calendar datetime
+                        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("gmt"));
+                        cal.setTimeInMillis(TimeUnit.SECONDS.toMillis(journey.getDateTime()));
+
+                        //full date, short time.
+                        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.FULL,DateFormat.SHORT);
+                        df.setTimeZone(TimeZone.getTimeZone("gmt"));
+
+                        String arrStr[] ={journey.getType(),df.format(cal.getTime()),Long.toString(journey.getOdometerStop()- journey.getOdometerStart())};
+                        csvWrite.writeNext(arrStr);
+                    }
+                }
+
+                csvWrite.close();
+                return true;
+            }
+            catch (IOException e){
+                Log.e("MainActivity", e.getMessage(), e);
+                return false;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+
+            if (this.dialog.isShowing()){
+                this.dialog.dismiss();
+            }
+            if (success){
+                Toast.makeText(MainActivity.this,getString(R.string.exportSuccess), Toast.LENGTH_LONG).show();
+            }
+            else {
+                Toast.makeText(MainActivity.this, getString(R.string.exportFail), Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
 }

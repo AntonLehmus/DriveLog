@@ -8,5 +8,10 @@
         android:orderInCategory="100"
         android:title="@string/action_settings"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/action_export"
+        android:title="@string/exportTitle"
+        android:icon="@drawable/ic_content_save"
+        app:showAsAction="ifRoom|withText"/>
 </menu>
 

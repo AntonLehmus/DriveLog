@@ -24,6 +24,9 @@
     <string name="deleteDialogTitle">Poista ajo</string>
     <string name="deleteDialogConfirm">Haluatko varmasti poistaa?</string>
     <string name="cancel">Peruuta</string>
+    <string name="exportTitle">Vie lokit</string>
+    <string name="exportSuccess">Vienti onnistui!</string>
+    <string name="exportFail">Vienti epäonnistui!</string>
 
 
 

@@ -36,4 +36,23 @@ public class Journey extends BaseModel {
         this.description=description;
     }
 
+    public long getOdometerStart() {
+        return odometerStart;
+    }
+
+    public long getOdometerStop() {
+        return odometerStop;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public int getDateTime() {
+        return dateTime;
+    }
+
+    public String getDescription() {
+        return description;
+    }
 }
