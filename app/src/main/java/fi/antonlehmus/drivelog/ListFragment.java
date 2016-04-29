@@ -59,14 +59,13 @@ public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                                     @Override
                                     public void run() {
                                         swipeRefreshLayout.setRefreshing(true);
-
-                                        refresh();
+                                        list.refresh();
                                     }
                                 }
         );
 
         //listen for listView item clicks
-        ListView listView = (ListView) getActivity().findViewById(R.id.journeyList);
+        final ListView listView = (ListView) getActivity().findViewById(R.id.journeyList);
         //listen for long clicks
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
@@ -77,7 +76,7 @@ public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 DeleteDialogFragment alertDialog = DeleteDialogFragment.newInstance(
                         getString(R.string.deleteDialogTitle),journeyArray.get(position).odometerStart,journeyArray.get(position).odometerStop);
                 alertDialog.show(fm, "fragment_alert");
-                refresh();
+                list.refresh();
                 return true;
             }
         });
@@ -91,7 +90,6 @@ public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             }
         });
 
-        
         list.refresh();
     }
 

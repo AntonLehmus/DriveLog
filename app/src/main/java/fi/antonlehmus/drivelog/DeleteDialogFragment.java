@@ -54,7 +54,6 @@ public class DeleteDialogFragment extends DialogFragment {
                 SQLite.delete(Journey.class)
                         .where(Journey_Table.odometerStart.is(odoStart))
                         .and(Journey_Table.odometerStop.is(odoStop))
-                        .async()
                         .execute();
 
                 ListFragment.list.refresh();

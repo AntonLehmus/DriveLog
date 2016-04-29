@@ -31,6 +31,7 @@ public class DatePickerFragment extends DialogFragment
     }
 
     public void onDateSet(DatePicker view, int year, int month, int day) {
+        //save times in gmt
         Calendar myCalendar = Calendar.getInstance(TimeZone.getTimeZone("gmt"));
         myCalendar.set(Calendar.YEAR, year);
         myCalendar.set(Calendar.MONTH, month);
@@ -40,6 +41,16 @@ public class DatePickerFragment extends DialogFragment
         myCalendar.set(Calendar.SECOND, 0);
         myCalendar.set(Calendar.MILLISECOND, 0);
 
+        //show in local time
+        Calendar uiCal = Calendar.getInstance(TimeZone.getDefault());
+        uiCal.set(Calendar.YEAR, year);
+        uiCal.set(Calendar.MONTH, month);
+        uiCal.set(Calendar.DAY_OF_MONTH, day);
+        uiCal.set(Calendar.HOUR_OF_DAY, 0);
+        uiCal.set(Calendar.MINUTE, 0);
+        uiCal.set(Calendar.SECOND, 0);
+        uiCal.set(Calendar.MILLISECOND, 0);
+
         //save time
         SharedPreferences sharedPref = getActivity().getSharedPreferences(constants.SAVED_DATE_TIME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
@@ -47,7 +58,7 @@ public class DatePickerFragment extends DialogFragment
         editor.apply();
 
         SimpleDateFormat df = new SimpleDateFormat("dd.MM.yyyy");
-        String  currentTime = df.format(myCalendar.getTime());
+        String  currentTime = df.format(uiCal.getTime());
 
         TextView tv = (TextView) getActivity().findViewById(R.id.datePicker);
         tv.setText(currentTime);

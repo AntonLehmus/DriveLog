@@ -32,12 +32,22 @@ public class TimePickerFragment extends DialogFragment
     }
 
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+        //save times in gmt
         Calendar myCalendar = Calendar.getInstance(TimeZone.getTimeZone("gmt"));
         myCalendar.setTimeInMillis(0);//set to start of Unix time
         myCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
         myCalendar.set(Calendar.MINUTE, minute);
         myCalendar.set(Calendar.SECOND, 0);
         myCalendar.set(Calendar.MILLISECOND, 0);
+
+        //show in local time
+        Calendar uiCal = Calendar.getInstance(TimeZone.getDefault());
+        uiCal.setTimeInMillis(0);//set to start of Unix time
+        uiCal.set(Calendar.HOUR_OF_DAY, hourOfDay);
+        uiCal.set(Calendar.MINUTE, minute);
+        uiCal.set(Calendar.SECOND, 0);
+        uiCal.set(Calendar.MILLISECOND, 0);
+
 
         //save time
         SharedPreferences sharedPref = getActivity().getSharedPreferences(constants.SAVED_DATE_TIME, Context.MODE_PRIVATE);
@@ -46,7 +56,7 @@ public class TimePickerFragment extends DialogFragment
         editor.apply();
 
         SimpleDateFormat df = new SimpleDateFormat("HH:mm");
-        String  currentTime = df.format(myCalendar.getTime());
+        String  currentTime = df.format(uiCal.getTime());
 
         TextView tv = (TextView) getActivity().findViewById(R.id.timePicker);
         tv.setText(currentTime);
